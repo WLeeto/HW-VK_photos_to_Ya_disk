@@ -1,4 +1,5 @@
 import requests
+from datetime import datetime
 
 
 class VKdownloader:
@@ -22,7 +23,6 @@ class VKdownloader:
             "count": count
         }
         resp = requests.get(url, params=params)
-
         return resp.json()
 
     def get_albums(self):
@@ -32,19 +32,20 @@ class VKdownloader:
             "v": self.version,
         }
         resp = requests.get(url, params=params)
-
         return resp.json()
 
-    def __try_it(self):
-        '''
-        Просто тест, не лезьте
-        '''
-        url = self.url + 'users.get'
-        params = {
-            "user_ids": "1",
-            "access_token": self.token,
-            "v": self.version,
-        }
-        resp = requests.get(url, params=params)
+    def photos_list(self):
+        photos_list = {}
+        json_out = []
+        for j in self.get_photos()["response"]["items"]:
+            for i in j['sizes']:
+                if i['type'] == 'z':
+                    photos_list[i['url']] = [str(j["likes"]["count"]),
+                                             datetime.utcfromtimestamp(j["date"]).strftime('%Y-%m-%d')]
+                    json_out.append({"file_name": str(j["likes"]["count"])
+                                                              + " " +
+                                                              datetime.utcfromtimestamp(j["date"]).strftime('%Y-%m-%d'), "size": i['type']})
 
-        return resp.json()
+        return {"photos_list": photos_list,
+                "json_out": json_out}
+

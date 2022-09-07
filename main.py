@@ -4,6 +4,7 @@ from Class_VKdownloader import VKdownloader
 from Class_YaUploader import YaUploader
 from datetime import datetime
 from pprint import pprint
+import json
 
 
 def is_number():
@@ -70,6 +71,10 @@ if __name__ == "__main__":
 
         print("Были скопированы следующие фаилы:")
         pprint(photos_list['json_out'])
+
+        with open('json_out.json', mode='w', encoding='utf-8') as file:
+            json.dump(photos_list['json_out'], file)
+
     elif command == 'G':
         print('Функция в разработке')
     elif command == 'H':

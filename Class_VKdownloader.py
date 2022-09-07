@@ -1,5 +1,6 @@
 import requests
 from datetime import datetime
+from pprint import pprint
 
 
 class VKdownloader:
@@ -25,27 +26,50 @@ class VKdownloader:
         resp = requests.get(url, params=params)
         return resp.json()
 
-    def get_albums(self):
+    def albums_list(self):
+        '''
+        Возвращает словарь {'id альбома': 'название альбома'}
+        '''
         url = self.url + 'photos.getAlbums'
         params = {
             "access_token": self.token,
             "v": self.version,
         }
-        resp = requests.get(url, params=params)
-        return resp.json()
+        album = requests.get(url, params=params).json()
+        all_albums = {}
+        for albums in album['response']['items']:
+            all_albums[albums["id"]] = albums["title"]
 
-    def photos_list(self):
+        return all_albums
+
+    def photos_list(self, count, album_id):
+        '''
+        Возвращает словарь {{"photos_list": {'ссылка для загрузки': 'имя для загрузки'}},
+                           {"json_out": {'"file_name": 'имя фаила', "size": "размер фаила"} }}
+        '''
         photos_list = {}
         json_out = []
-        for j in self.get_photos()["response"]["items"]:
+        for j in self.get_photos(count=count, album_id=album_id)["response"]["items"]:
             for i in j['sizes']:
-                if i['type'] == 'z':
-                    photos_list[i['url']] = [str(j["likes"]["count"]),
-                                             datetime.utcfromtimestamp(j["date"]).strftime('%Y-%m-%d')]
-                    json_out.append({"file_name": str(j["likes"]["count"])
-                                                              + " " +
-                                                              datetime.utcfromtimestamp(j["date"]).strftime('%Y-%m-%d'), "size": i['type']})
-
+                biggest = 0
+                count = i['height'] * i['width']
+                if count > biggest:
+                    biggest = count
+            for i in j['sizes']:
+                if i['height'] * i['width'] == biggest:
+                    photos_list[i['url']] = [str(j["likes"]["count"]), datetime.utcfromtimestamp(j["date"]).strftime('%Y-%m-%d')]
+                    # json_out.append({"file_name": str(j["likes"]["count"]) + " " + datetime.utcfromtimestamp(j["date"]).strftime('%Y-%m-%d'), "size": i['type']})
+        for i in photos_list:
+                json_out.append({"file_name": photos_list[i][0] + photos_list[i][1], "size":f'{biggest} px'})
         return {"photos_list": photos_list,
                 "json_out": json_out}
+
+
+if __name__ == '__main__':
+    with open('Tokens/token_vk.txt') as token_file:
+        token_vk = token_file.read()
+
+
+
+
 

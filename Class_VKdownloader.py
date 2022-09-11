@@ -42,7 +42,7 @@ class VKdownloader:
 
         return all_albums
 
-    def photos_list(self, count, album_id):
+    def photos_list(self, count=5, album_id='profile'):
         '''
         Возвращает словарь {{"photos_list": {'ссылка для загрузки': 'имя для загрузки'}},
                            {"json_out": {'"file_name": 'имя фаила', "size": "размер фаила"} }}
@@ -69,7 +69,5 @@ if __name__ == '__main__':
     with open('Tokens/token_vk.txt') as token_file:
         token_vk = token_file.read()
 
-
-
-
-
+    photos = VKdownloader(token_vk)
+    pprint(photos.photos_list())

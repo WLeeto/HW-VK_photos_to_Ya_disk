@@ -1,5 +1,5 @@
 import requests
-
+from pprint import pprint
 
 class YaUploader:
     def __init__(self, token: str):
@@ -57,3 +57,27 @@ class YaUploader:
         requests.put(reference, headers=self.get_header(), params=params)
         print(f'Папка {folder_name} создана')
 
+    def file_list(self, folder_name):
+        '''
+        Получает список фаилов на диске в указанной папке
+        :return:
+        '''
+        files_list = []
+        response = 'https://cloud-api.yandex.net/v1/disk/resources'
+        header = self.get_header()
+        params = {
+            "path": folder_name,
+        }
+        response_get = requests.get(response, headers=header, params=params)
+        for i in response_get.json()["_embedded"]['items']:
+            files_list.append(i['name'])
+        return files_list
+
+
+if __name__ == "__main__":
+    with open('Tokens/token_ya_disk.txt') as token_file:
+        token_ya = token_file.read()
+
+    test = YaUploader(token_ya)
+
+    pprint(test.file_list('New folder'))

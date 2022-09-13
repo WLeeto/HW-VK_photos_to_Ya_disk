@@ -1,7 +1,7 @@
 from Class_VKdownloader import VKdownloader
 from Class_YaUploader import YaUploader
 from pprint import pprint
-import json
+from time import sleep
 
 
 class Interface:
@@ -73,6 +73,7 @@ class Interface:
         photos_list = photos.photos_list(count=count, album_id=album_id, owner_id=owner_id)
 
         for url in photos_list['photos_list']:
+            sleep(1)
             if str(photos_list["photos_list"][url][0]) in upload.file_list(folder_name):
                 upload.upload_from_url(url, f'{folder_name}/{str(photos_list["photos_list"][url][0] + " " + photos_list["photos_list"][url][1])}')
             else:
@@ -93,28 +94,5 @@ class Interface:
 
         target = VKdownloader(self.token_vk)
         pprint(target.albums_list(owner_id=owner_id))
-
-
-if __name__ == '__main__':
-    with open('Tokens/token_vk.txt') as token_file:
-        token_vk = token_file.read()
-
-    with open('Tokens/token_ya_disk.txt') as token_file:
-        token_ya = token_file.read()
-
-    interface = Interface(token_vk=token_vk, token_ya=token_ya)
-    interface.greetings()
-    interface.help()
-    command = input('Введите команду: ')
-    if command == "Ya":
-        interface.Ya_command()
-    elif command == "G":
-        interface.G_command()
-    elif command == "H":
-        interface.H_command()
-    elif command == "L":
-        interface.L_command()
-    else:
-        print('Неизвестная команда')
 
 

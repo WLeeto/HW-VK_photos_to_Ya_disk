@@ -1,13 +1,12 @@
-from Class_interface import Interface
+from Class_Interface import Interface
+from Class_Config import Config
 
 
 if __name__ == "__main__":
-
-    with open('Tokens/token_vk.txt') as token_file:
-        token_vk = token_file.read()
-
-    with open('Tokens/token_ya_disk.txt') as token_file:
-        token_ya = token_file.read()
+    config = Config()
+    config.createConfig()
+    token_vk = config.get_token('VK')
+    token_ya = config.get_token('yandex')
 
     interface = Interface(token_vk=token_vk, token_ya=token_ya)
     interface.greetings()
@@ -24,6 +23,5 @@ if __name__ == "__main__":
     else:
         print('Неизвестная команда')
 
-# 273339906
-
+# 231515574
 # 14191653

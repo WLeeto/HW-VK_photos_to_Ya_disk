@@ -61,7 +61,7 @@ class VKdownloader:
                 if i['height'] * i['width'] == biggest:
                     photos_list[i['url']] = [str(j["likes"]["count"]), datetime.utcfromtimestamp(j["date"]).strftime('%Y-%m-%d')]
         for i in photos_list:
-                json_out.append({"file_name": photos_list[i][0] + photos_list[i][1], "size":f'{biggest} px'})
+                json_out.append({"file_name": photos_list[i][0] + photos_list[i][1], "size": f'{biggest} px'})
         return {"photos_list": photos_list,
                 "json_out": json_out}
 
